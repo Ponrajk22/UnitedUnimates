@@ -1,26 +1,6 @@
 [
 
   {
-    "ParameterKey": "DBName",
-    "ParameterValue": "wordpressdb",
-    "UsePreviousValue": false
-  },
-  {
-    "ParameterKey": "DBPassword",
-    "ParameterValue": "dbpassword",
-    "UsePreviousValue": false
-  },
-  {
-    "ParameterKey": "DBRootPassword",
-    "ParameterValue": "rootPassword",
-    "UsePreviousValue": false
-  },
-  {
-    "ParameterKey": "DBUser",
-    "ParameterValue": "DBUser",
-    "UsePreviousValue": false
-  },
-  {
     "ParameterKey": "KeyName",
     "ParameterValue": "RichOwl",
     "UsePreviousValue": false
