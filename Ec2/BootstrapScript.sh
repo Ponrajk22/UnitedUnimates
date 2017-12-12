@@ -1,28 +1,40 @@
-#cloud-config
- 
-# This example assumes the instance is 12.04 (precise)
-# The default is to install from packages.
- 
-# Key from
-apt_upgrade: true
-apt_sources:
-- source: "deb  $RELEASE-0.10 main"
-key: |
------BEGIN PGP PUBLIC KEY BLOCK-----
-Version: GnuPG v1.4.9 (GNU/Linux)
- 
-mQGiBEppC7QRBADfsOkZU6KZK+YmKw4wev5mjKJEkVGlus+NxW8wItX5sGa6kdUu
-zIhi7tKFo6WiwjKZq0dzctsJJjtIfr4K4vbiD9Ojg1iISQQYEQIACQUCSmkLtAIb
-........
-DAAKCRApQKupg++CauISAJ9CxYPOKhOxalBnVTLeNUkAHGg2gACeIsbobtaD4ZHG
-0GLl8EkfA8uhluM=
-=zKAm
------END PGP PUBLIC KEY BLOCK-----
+##cloud-config
+# 
+## This example assumes the instance is 12.04 (precise)
+## The default is to install from packages.
+# 
+## Key from
+#apt_upgrade: true
+#apt_sources:
+#- source: "deb  $RELEASE-0.10 main"
+#key: |
+#-----BEGIN PGP PUBLIC KEY BLOCK-----
+#Version: GnuPG v1.4.9 (GNU/Linux)
+# 
+#mQGiBEppC7QRBADfsOkZU6KZK+YmKw4wev5mjKJEkVGlus+NxW8wItX5sGa6kdUu
+#zIhi7tKFo6WiwjKZq0dzctsJJjtIfr4K4vbiD9Ojg1iISQQYEQIACQUCSmkLtAIb
+#........
+#DAAKCRApQKupg++CauISAJ9CxYPOKhOxalBnVTLeNUkAHGg2gACeIsbobtaD4ZHG
+#0GLl8EkfA8uhluM=
+#=zKAm
+#-----END PGP PUBLIC KEY BLOCK-----
+
+#!/bin/bash 
+set -x
+exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
+echo BEGIN
+date '+%Y-%m-%d %H:%M:%S'
+ /bin/mkdir -p /etc/chef
+ /bin/mkdir -p /var/lib/chef 
+/bin/mkdir -p /var/log/chef
+cd /etc/chef/
+
+curl -L https://omnitruck.chef.io/install.sh | bash || error_exit 'could not install chef'
  
 #The above will verify that the we are downloading is from trusted source
 chef:
 run_list:
-- "recipe[nginx]"
+- "recipe[apache]"
  
 # Valid values are 'gems' and 'packages' and 'omnibus'
 install_type: "packages"
@@ -32,13 +44,13 @@ install_type: "packages"
 force_install: false
  
 # Chef settings
-server_url: "https://ip-X-X-X-X.ec2.internal/organizations/organisation-name"
+server_url: "https://manage.chef.io/organizations/unitedunimates"
  
 # Node Name
 # Defaults to the instance-id if not present
-node_name: "#{Socket.gethostname}-test"
-# Default validation name is organisation-validator
-validation_name: "organisation-validator"
+node_name: "#{Socket.gethostname}-UU"
+## Default validation name is organisation-validator
+#validation_name: "organisation-validator"
 validation_key: |
 -----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAw75CltGJ1oYf980m1B9soHbDVK/6l1dhgzd86aW8GjFpqfz8
@@ -50,5 +62,7 @@ QEo7WQKBgGKenUL/CmBmehY6EBfsYyq1Pbwn/f3n1D0w61ef+zBD0KVnO78dZozq
 Wd2pd4EHxp4+V1NEGCF47YVfiO+D9Lk3V4ic+1kVfYCsefygdbr5i1C4zUVOGcso
 QcbwgH/doZL7MfiofwHP8MupY410UQnnV2it72Ml+bJf9Q7ezjsX
 -----END RSA PRIVATE KEY-----
- 
+# 
 #The above key is organisation-validator.pem which is present on the chef server
+
+output: {all: '| tee -a /var/log/cloud-init-output.log'}
